@@ -37,7 +37,6 @@ static const float tex_coord_vb[] =
    0.0f, 0.0f,
 };
 
-GX2SamplerVar psampler = { "s", GX2_SAMPLER_VAR_TYPE_SAMPLER_2D, 0 };
 GX2Texture texture = {0};
 
 uint32_t* create_mandelbrot(int width, int height)
@@ -196,10 +195,6 @@ int main(int argc, char **argv)
 
    GX2Invalidate(GX2_INVALIDATE_MODE_CPU_TEXTURE, texture.surface.image, texture.surface.imageSize);
 
-   /* create a sampler */
-   group.pixelShader->samplerVarCount = 1;
-   group.pixelShader->samplerVars = &psampler;
-
    GX2Sampler sampler;
    GX2InitSampler(&sampler, GX2_TEX_CLAMP_MODE_CLAMP, GX2_TEX_XY_FILTER_MODE_LINEAR);
    
@@ -217,8 +212,8 @@ int main(int argc, char **argv)
       GX2RSetAttributeBuffer(&position_buffer, 0, position_buffer.elemSize, 0);
       GX2RSetAttributeBuffer(&tex_coord_buffer, 1, tex_coord_buffer.elemSize, 0);
 
-      GX2SetPixelTexture(&texture, psampler.location);
-      GX2SetPixelSampler(&sampler, psampler.location);
+      GX2SetPixelTexture(&texture, group.pixelShader->samplerVars[0].location);
+      GX2SetPixelSampler(&sampler, group.pixelShader->samplerVars[0].location);
 
       GX2DrawEx(GX2_PRIMITIVE_MODE_QUADS, 4, 0, 1);
       WHBGfxFinishRenderTV();
@@ -231,8 +226,8 @@ int main(int argc, char **argv)
       GX2RSetAttributeBuffer(&position_buffer, 0, position_buffer.elemSize, 0);
       GX2RSetAttributeBuffer(&tex_coord_buffer, 1, tex_coord_buffer.elemSize, 0);
 
-      GX2SetPixelTexture(&texture, psampler.location);
-      GX2SetPixelSampler(&sampler, psampler.location);
+      GX2SetPixelTexture(&texture, group.pixelShader->samplerVars[0].location);
+      GX2SetPixelSampler(&sampler, group.pixelShader->samplerVars[0].location);
 
       GX2DrawEx(GX2_PRIMITIVE_MODE_QUADS, 4, 0, 1);
       WHBGfxFinishRenderDRC();
